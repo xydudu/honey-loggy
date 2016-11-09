@@ -1,0 +1,6 @@
+# honey-loggly 
+
+Server for honey-loggly
+
+- npm build
+- node ./bin/honey-log-server

@@ -1,0 +1,9 @@
+'use strict';
+
+var _socketServer = require('./src/socket-server.js');
+
+var _socketServer2 = _interopRequireDefault(_socketServer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _socketServer2.default();

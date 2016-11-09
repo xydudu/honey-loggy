@@ -1,0 +1,29 @@
+{
+  "name": "honey-loggly",
+  "version": "1.0.0",
+  "description": "honey log service",
+  "bin": "./bin/honey-log-server",
+  "scripts": {
+    "test": "mocha --compilers js:babel-register",
+    "babel": "babel-node ./index.js",
+    "build": "cp ./package.json ./bin/package.json && babel ./index.js --out-file ./bin/honey-log-server && babel ./src --out-dir ./bin/src"
+  },
+  "keywords": [
+    "log"
+  ],
+  "author": "Lian Hsueh <xuedudu@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^3.1.2",
+    "babel-cli": "^6.18.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-register": "^6.18.0"
+  },
+  "babel": {
+    "presets": ["latest"]
+  },
+  "server": {
+    "port": "8124",
+    "host": "0.0.0.0"
+  }
+}
