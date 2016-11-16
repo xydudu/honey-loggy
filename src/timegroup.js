@@ -31,13 +31,25 @@ class TimeGroup {
 
     async _timeGroupList() {
         let _ = this
-        return await _.client.zrangeAsync(_.key, 0, -1)
-        /*
-        return await _.client.zrangeAsync(_.key, 0, -1)
+        return await _.client.zrangeAsync(_.key, 0, -1, 'withscores')
             .then(_list => {
-                return _list
+                let arr = []
+                let i = {}
+                _list.forEach(_item => {
+                    if (isNaN(_item)) {
+                        i.desc = _item 
+                    } else {
+                        i.timestamp = _item
+                        arr.push(i)
+                        i = {}
+                    }
+                })
+                return arr
             })
-        */
+            .catch(_err => {
+                console.log(`[err] ${_err}`)
+                return []
+            })
     }
 
 }

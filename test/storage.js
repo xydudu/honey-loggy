@@ -61,6 +61,7 @@ describe('TimeGroup', () => {
         let timeGroup = new TimeGroup(key)
         let list = await timeGroup.list()
         assert.equal(list.length, 5)
+        assert.equal(list[2].timestamp, 1479280026392)
     })
 
 })
