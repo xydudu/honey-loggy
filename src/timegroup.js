@@ -32,9 +32,12 @@ class TimeGroup {
     async _timeGroupList() {
         let _ = this
         return await _.client.zrangeAsync(_.key, 0, -1)
+        /*
+        return await _.client.zrangeAsync(_.key, 0, -1)
             .then(_list => {
                 return _list
             })
+        */
     }
 
 }
