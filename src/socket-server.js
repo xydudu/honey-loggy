@@ -1,6 +1,6 @@
 
 import net from 'net'
-import { server } from '../package.json'
+import { server } from '~/package.json'
 
 export default class {
     
