@@ -1,5 +1,6 @@
 
 import redis from 'redis'
+import moment from 'moment'
 import { promisifyAll } from 'bluebird'
 import { redis_conf } from '~/package.json'
 
@@ -41,6 +42,7 @@ class LogMsg extends Util {
 
         let _ = this
         _.client = redisClient
+        _.now = moment().format('YYYYMMDD')
         _.key = _.getKeyFromLog(_input)
         if (!_.key) {
             console.warn('日志类型为空')
@@ -58,6 +60,8 @@ class LogMsg extends Util {
 
     async _saveToTimeGroup() {
         let _ = this
+        //_.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
+        await _.client.saddAsync(`time_group:${_.now}`, _.key)
         return await _.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
     }
 
