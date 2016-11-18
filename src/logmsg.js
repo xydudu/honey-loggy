@@ -1,6 +1,5 @@
 
 import redis from 'redis'
-import 'babel-polyfill'
 import { promisifyAll } from 'bluebird'
 import { redis_conf } from '~/package.json'
 
@@ -30,7 +29,7 @@ class Util {
     }
 
     getDescFromLog(_input) {
-        return _input.replace(/(\[.+?\]|\s)/gi, '')
+        return _input.replace(/(\[.+?\])/gi, '').replace(/(^\s+|\s+$)/, '')
     }
 
 }
@@ -63,8 +62,9 @@ class LogMsg extends Util {
     }
 
     save() {
-        if (this.type === 'time_group') 
+        if (this.type === 'time_group') {
             return this._saveToTimeGroup()
+        }
         return false
     }
 

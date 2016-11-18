@@ -39,7 +39,13 @@ describe('LogMsg', () => {
         let msg = new LogMsg(input)
         assert.ok(msg.type === 'time_group')
         assert.ok(msg.save())
+
+        let input2 = '[dollargan] honey-loggly To B [time_group:1111] [1234]'
+        let msg2 = new LogMsg(input2)
+        assert.ok(msg2.type === 'time_group')
+        assert.ok(msg2.save())
     })
+
 
 })
 
@@ -52,11 +58,11 @@ describe('TimeGroup', () => {
         new LogMsg('[dollargan] step4 [time_group:a1b2c3d5] [1479280106392]').save()
         new LogMsg('[hoobot] step5 [time_group:a1b2c3d5] [1479281006392]').save()
     }) 
-    after(done => {
-        let {port, host} = redis_conf 
-        let c = redis.createClient(port, host)  
-        c.flushall(done)
-    })
+    //after(done => {
+    //    let {port, host} = redis_conf 
+    //    let c = redis.createClient(port, host)  
+    //    c.flushall(done)
+    //})
     it('list()', async () => {
         let timeGroup = new TimeGroup(key)
         let list = await timeGroup.list()

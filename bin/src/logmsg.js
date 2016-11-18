@@ -76,10 +76,14 @@ var LogMsg = function (_Util) {
         var _ = _this;
         _.client = redisClient;
         _.key = _.getKeyFromLog(_input);
+        if (!_.key) {
+            console.warn('日志类型为空');
+            _.key = '';
+        }
         _.times = _.getTimestampFromLog(_input);
         _.app_name = _.getAppnameFromLog(_input);
         _.desc = _.getDescFromLog(_input);
-        _.type = _.key.split(':')[0] || _.key;
+        _.type = _.key.split(':')[0];
 
         _.client.on('error', function (_err) {
             console.error(_err);
@@ -121,7 +125,11 @@ var LogMsg = function (_Util) {
     }, {
         key: 'save',
         value: function save() {
-            if (this.type === 'time_group') return this._saveToTimeGroup();
+            console.log(this.type);
+            if (this.type === 'time_group') {
+                console.log('do save');
+                return this._saveToTimeGroup();
+            }
             return false;
         }
     }]);
