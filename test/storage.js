@@ -1,4 +1,5 @@
 
+import 'babel-polyfill'
 import assert from 'assert'
 import redis from 'redis'
 import LogMsg from '~/src/logmsg.js'
