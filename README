@@ -4,5 +4,5 @@ Server for honey-loggly
 
 - npm test 
 
-- npm build
-- node ./bin/honey-log-server
+- npm run build
+- npm run server

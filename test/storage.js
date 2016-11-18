@@ -21,8 +21,8 @@ describe('Util', () => {
     })
 
     it('getAppnameFromLog()', () => {
-        let expect = msg.getAppnameFromLog(input)
-        assert.ok(expect === 'dollargan')
+        let expect = msg.getAppnameFromLog('[honey-loggly] test [time_group:1111] [1341237131213]')
+        assert.ok(expect === 'honey-loggly')
     })
 
     it('getDescFromLog()', () => {

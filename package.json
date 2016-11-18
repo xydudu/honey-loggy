@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --compilers js:babel-register",
     "babel": "babel-node ./index.js",
-    "build": "cp ./package.json ./bin/package.json && babel ./index.js --out-file ./bin/honey-log-server && babel ./src --out-dir ./bin/src"
+    "build": "cp ./package.json ./bin/package.json && babel ./index.js --out-file ./bin/honey-log-server && babel ./src --out-dir ./bin/src",
+    "server": "node ./bin/honey-log-server"
   },
   "keywords": [
     "log"

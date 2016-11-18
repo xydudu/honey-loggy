@@ -1,6 +1,7 @@
 
 import net from 'net'
 import { server } from '~/package.json'
+import LogMsg from '~/src/logmsg.js'
 
 export default class {
     
@@ -17,6 +18,8 @@ export default class {
     _receive(_msg, _socket) {
         //let socket = this.socket
         console.log(`[msg] ${_msg}`)
+        new LogMsg(_msg.toString()).save()
+        
     } 
 
 }

@@ -4,6 +4,10 @@ import 'babel-polyfill'
 import { promisifyAll } from 'bluebird'
 import { redis_conf } from '~/package.json'
 
+promisifyAll(redis.RedisClient.prototype)
+const {port, host} = redis_conf 
+const redisClient = redis.createClient(port, host)
+
 class Util {
     
     constructor() {
@@ -21,7 +25,7 @@ class Util {
     }
 
     getAppnameFromLog(_input) {
-        let match = _input.match(/^\[(\w+)\]/)
+        let match = _input.match(/^\[([\w\-_]+)\]/)
         return match ? match[1] : false
     }
 
@@ -35,11 +39,9 @@ class LogMsg extends Util {
     
     constructor(_input) {
         super()
-        let {port, host} = redis_conf 
-        promisifyAll(redis.RedisClient.prototype)
 
         let _ = this
-        _.client = redis.createClient(port, host)
+        _.client = redisClient
         _.key = _.getKeyFromLog(_input)
         _.times = _.getTimestampFromLog(_input)
         _.app_name = _.getAppnameFromLog(_input)

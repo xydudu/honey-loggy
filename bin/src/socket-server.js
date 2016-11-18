@@ -12,6 +12,10 @@ var _net2 = _interopRequireDefault(_net);
 
 var _package = require('../package.json');
 
+var _logmsg = require('./logmsg.js');
+
+var _logmsg2 = _interopRequireDefault(_logmsg);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34,6 +38,7 @@ var _class = function () {
         value: function _receive(_msg, _socket) {
             //let socket = this.socket
             console.log('[msg] ' + _msg);
+            new _logmsg2.default(_msg.toString()).save();
         }
     }]);
 
