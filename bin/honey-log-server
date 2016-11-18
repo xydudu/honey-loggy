@@ -1,5 +1,7 @@
 'use strict';
 
+require('babel-polyfill');
+
 var _socketServer = require('./src/socket-server.js');
 
 var _socketServer2 = _interopRequireDefault(_socketServer);

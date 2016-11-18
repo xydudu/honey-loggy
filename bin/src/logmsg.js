@@ -10,7 +10,9 @@ var _redis = require('redis');
 
 var _redis2 = _interopRequireDefault(_redis);
 
-require('babel-polyfill');
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
 
 var _bluebird = require('bluebird');
 
@@ -58,7 +60,7 @@ var Util = function () {
     }, {
         key: 'getDescFromLog',
         value: function getDescFromLog(_input) {
-            return _input.replace(/(\[.+?\]|\s)/gi, '');
+            return _input.replace(/(\[.+?\])/gi, '').replace(/(^\s+|\s+$)/gi, '');
         }
     }]);
 
@@ -75,6 +77,7 @@ var LogMsg = function (_Util) {
 
         var _ = _this;
         _.client = redisClient;
+        _.now = (0, _moment2.default)().format('YYYYMMDD');
         _.key = _.getKeyFromLog(_input);
         if (!_.key) {
             console.warn('日志类型为空');
@@ -102,13 +105,19 @@ var LogMsg = function (_Util) {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 _ = this;
+                                //_.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
+
                                 _context.next = 3;
-                                return _.client.zaddAsync(_.key, _.times, '[' + _.app_name + '] ' + _.desc);
+                                return _.client.saddAsync('time_group:' + _.now, _.key);
 
                             case 3:
+                                _context.next = 5;
+                                return _.client.zaddAsync(_.key, _.times, '[' + _.app_name + '] ' + _.desc);
+
+                            case 5:
                                 return _context.abrupt('return', _context.sent);
 
-                            case 4:
+                            case 6:
                             case 'end':
                                 return _context.stop();
                         }
@@ -125,9 +134,7 @@ var LogMsg = function (_Util) {
     }, {
         key: 'save',
         value: function save() {
-            console.log(this.type);
             if (this.type === 'time_group') {
-                console.log('do save');
                 return this._saveToTimeGroup();
             }
             return false;
