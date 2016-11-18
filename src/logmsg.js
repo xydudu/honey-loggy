@@ -43,6 +43,10 @@ class LogMsg extends Util {
         let _ = this
         _.client = redisClient
         _.key = _.getKeyFromLog(_input)
+        if (!_.key) {
+            console.warn('日志类型为空')
+            _.key = ''
+        }
         _.times = _.getTimestampFromLog(_input)
         _.app_name = _.getAppnameFromLog(_input)
         _.desc = _.getDescFromLog(_input)

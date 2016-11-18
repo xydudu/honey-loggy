@@ -78,9 +78,8 @@ var LogMsg = function (_Util) {
         _.key = _.getKeyFromLog(_input);
         _.times = _.getTimestampFromLog(_input);
         _.app_name = _.getAppnameFromLog(_input);
-        console.log(_input, _.app_name);
         _.desc = _.getDescFromLog(_input);
-        _.type = _.key.split(':')[0];
+        _.type = _.key.split(':')[0] || _.key;
 
         _.client.on('error', function (_err) {
             console.error(_err);
