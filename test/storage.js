@@ -28,7 +28,7 @@ describe('Util', () => {
 
     it('getDescFromLog()', () => {
         let expect = msg.getDescFromLog(input)
-        assert.ok(expect === 'A同学点击预览')
+        assert.equal(expect, 'A同学点击预览')
     })
 
 })

@@ -29,7 +29,7 @@ class Util {
     }
 
     getDescFromLog(_input) {
-        return _input.replace(/(\[.+?\])/gi, '').replace(/(^\s+|\s+$)/, '')
+        return _input.replace(/(\[.+?\])/gi, '').replace(/(^\s+|\s+$)/gi, '')
     }
 
 }
