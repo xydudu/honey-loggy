@@ -1,6 +1,6 @@
 
 import redis from 'redis'
-import 'babel-polyfill'
+import moment from 'moment'
 import { promisifyAll } from 'bluebird'
 import { redis_conf } from '~/package.json'
 
@@ -13,8 +13,11 @@ class TimeGroup {
 
         let _ = this
         _.client = redis.createClient(port, host)
-        _.key = _key
-        _.type = _key.split(':')[0]
+
+        if (_key && _key.indexOf(':') > 0) {
+            _.key = _key
+            _.type = _key.split(':')[0]
+        }
         
 
         _.client.on('error', _err => {
@@ -44,12 +47,24 @@ class TimeGroup {
                         i = {}
                     }
                 })
+                arr.reduce((_start, _end) => {
+                    _start.start = _start.timestamp
+                    _start.end = _end.timestamp
+                    return _end
+                })
                 return arr
             })
             .catch(_err => {
                 console.log(`[err] ${_err}`)
                 return []
             })
+    }
+
+    async getKeys(_day) {
+        let now = moment().format('YYYYMMDD')
+        let day = _day ||now
+        let key = `time_group:${now}`
+        return await this.client.smembersAsync(key)
     }
 
 }

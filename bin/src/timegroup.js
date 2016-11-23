@@ -10,7 +10,9 @@ var _redis = require('redis');
 
 var _redis2 = _interopRequireDefault(_redis);
 
-require('babel-polyfill');
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
 
 var _bluebird = require('bluebird');
 
@@ -33,8 +35,11 @@ var TimeGroup = function () {
 
         var _ = this;
         _.client = _redis2.default.createClient(port, host);
-        _.key = _key;
-        _.type = _key.split(':')[0];
+
+        if (_key && _key.indexOf(':') > 0) {
+            _.key = _key;
+            _.type = _key.split(':')[0];
+        }
 
         _.client.on('error', function (_err) {
             console.error(_err);
@@ -101,6 +106,11 @@ var TimeGroup = function () {
                                             i = {};
                                         }
                                     });
+                                    arr.reduce(function (_start, _end) {
+                                        _start.start = _start.timestamp;
+                                        _start.end = _end.timestamp;
+                                        return _end;
+                                    });
                                     return arr;
                                 }).catch(function (_err) {
                                     console.log('[err] ' + _err);
@@ -123,6 +133,38 @@ var TimeGroup = function () {
             }
 
             return _timeGroupList;
+        }()
+    }, {
+        key: 'getKeys',
+        value: function () {
+            var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(_day) {
+                var now, day, key;
+                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    while (1) {
+                        switch (_context3.prev = _context3.next) {
+                            case 0:
+                                now = (0, _moment2.default)().format('YYYYMMDD');
+                                day = _day || now;
+                                key = 'time_group:' + now;
+                                _context3.next = 5;
+                                return this.client.smembersAsync(key);
+
+                            case 5:
+                                return _context3.abrupt('return', _context3.sent);
+
+                            case 6:
+                            case 'end':
+                                return _context3.stop();
+                        }
+                    }
+                }, _callee3, this);
+            }));
+
+            function getKeys(_x) {
+                return _ref3.apply(this, arguments);
+            }
+
+            return getKeys;
         }()
     }]);
 

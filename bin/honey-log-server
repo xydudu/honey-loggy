@@ -1,11 +1,21 @@
 'use strict';
 
-require('babel-polyfill');
-
 var _socketServer = require('./src/socket-server.js');
 
 var _socketServer2 = _interopRequireDefault(_socketServer);
 
+var _webServer = require('./src/web-server.js');
+
+var _webServer2 = _interopRequireDefault(_webServer);
+
+var _package = require('./package.json');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+if (!global._babelPolyfill) require("babel-polyfill");
+
+
 new _socketServer2.default();
+_webServer2.default.listen(_package.web_server.port, function () {
+    console.log('Server listening ' + _package.web_server.port);
+});
