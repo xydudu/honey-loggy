@@ -1,5 +1,5 @@
 
-if (!global._babelPolyfill) require("babel-polyfill")
+import "babel-polyfill"
 import SocketServer from './src/socket-server.js'
 import webserver from './src/web-server.js'
 import { web_server } from '~/package.json'
