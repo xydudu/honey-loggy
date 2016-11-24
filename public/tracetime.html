@@ -24,15 +24,7 @@
     </head>
     <body>
         <h1>Time Monitor</h1>
-        <div class="container" id="box">
-                <!--
-            <ul class="row" id="box">
-                <li style="width: 100px; background-color: rgba(200,200,200,1)">step 1</li>  
-                <li style="width: 200px">step 2</li>  
-                <li style="width: 220px">step 3</li>  
-            </ul>
-                -->
-        </div>
+        <div class="container" id="box"></div>
         <script>
             $(function() {
                 
@@ -47,10 +39,10 @@
                     box.html('')
                     $.each(_data, function(_i, _item) {
                         var ul = $('<ul />').addClass('row')
+                        var h3 = $('<h3 />').html(_item[0].desc)
                         $.each(_item, function(_i, _item) {
                             var w = _item.start ? (0.05 * (~~_item.end - ~~_item.start)) : 50
                             var li = $('<li style="width: '+ w +'px; background-color: red"></li>') 
-                            
                             li.html((~~_item.end - ~~_item.start).toFixed() +'ms') 
                             if(w < 50) {
                                 li.width('auto')
@@ -60,6 +52,7 @@
                             }
                             ul.append(li)
                         })
+                        box.append(h3)
                         box.append(ul)
                     })
                 })
