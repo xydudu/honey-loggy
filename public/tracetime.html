@@ -23,14 +23,41 @@
         </style>
     </head>
     <body>
-        <h1>Time Monitor</h1>
+        <h3>
+            Time Monitor 
+            <small>
+                <a href="#all">All Logs</a>    
+                <a href="#yesterday">Yesterday</a>    
+                <a href="#today">Today</a>    
+            </small>
+        </h3>
         <div class="container" id="box"></div>
         <script>
-            $(function() {
+            var ALL = false
+            $('h3>small>a').click(function(_e) {
+                _e.preventDefault()
+                if (/#all/.test(this.href)) {
+                    ALL = true
+                    return run()    
+                }
+                if (/#today/.test(this.href)) {
+                    ALL = false
+                    return run()    
+                }
+                if (/#yesterday/.test(this.href)) {
+                    ALL = false
+                    return run('yesterday')    
+                }
+
+                
+            })
+            function run(_day) {
                 
                 var box = $('#box')
                 box.html('loading...')
-                $.getJSON('/timegroup/list', function(_data) {
+                var api = '/timegroup/list'
+                if (_day) api = '/timegroup/list/'+ _day
+                $.getJSON(api, function(_data) {
                 //$.getJSON('/list.json', function(_data) {
                     if (!_data.length) {
                         box.html('No data yet!')
@@ -39,13 +66,24 @@
                     box.html('')
                     $.each(_data, function(_i, _item) {
                         var ul = $('<ul />').addClass('row')
+                        if (_item.length === 2 && !ALL) return
                         $.each(_item, function(_i, _item) {
-                            if (_i === 0) {
-                                ul.append('<li style="background-color:#fff;color:gray;">'+ _item.desc +'</li>')
+                            if (_item.start) {
+                                _item.start = parseInt(_item.start)
                             }
-                            var w = _item.start ? (0.05 * (~~_item.end - ~~_item.start)) : 50
+                            if (_item.end) {
+                                _item.end = parseInt(_item.end)
+                            }
+                            _item.timestamp = parseInt(_item.timestamp)
+                            if (_i === 0) {
+                                _item.desc = _item.desc.replace(/^\[\w+\]/, '')
+                                ul.append('<li style="background-color:#fff;color:gray;">['+
+                                        moment(_item.timestamp).fromNow() 
+                                        +']'+ _item.desc +'</li>')
+                            }
+                            var w = _item.start ? (0.05 * (_item.end - _item.start)) : 50
                             var li = $('<li style="width: '+ w +'px; background-color: red"></li>') 
-                            li.html((~~_item.end - ~~_item.start).toFixed() +'ms') 
+                            li.html((_item.end - _item.start).toFixed() +'ms') 
                             if(w < 50) {
                                 li.width('auto')
                             }
@@ -57,7 +95,9 @@
                         box.append(ul)
                     })
                 })
-            })
+            }
+
+            $(run)
 
         </script>
     </body>
