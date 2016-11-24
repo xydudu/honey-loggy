@@ -39,8 +39,10 @@
                     box.html('')
                     $.each(_data, function(_i, _item) {
                         var ul = $('<ul />').addClass('row')
-                        var h3 = $('<h3 />').html(_item[0].desc)
                         $.each(_item, function(_i, _item) {
+                            if (_i === 0) {
+                                ul.append('<li style="background-color:#fff;color:gray;">'+ _item.desc +'</li>')
+                            }
                             var w = _item.start ? (0.05 * (~~_item.end - ~~_item.start)) : 50
                             var li = $('<li style="width: '+ w +'px; background-color: red"></li>') 
                             li.html((~~_item.end - ~~_item.start).toFixed() +'ms') 
@@ -52,7 +54,6 @@
                             }
                             ul.append(li)
                         })
-                        box.append(h3)
                         box.append(ul)
                     })
                 })
