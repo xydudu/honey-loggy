@@ -57,8 +57,8 @@
                 box.html('loading...')
                 var api = '/timegroup/list'
                 if (_day) api = '/timegroup/list/'+ _day
-                //$.getJSON(api, function(_data) {
-                $.getJSON('/list.json', function(_data) {
+                $.getJSON(api, function(_data) {
+                //$.getJSON('/list.json', function(_data) {
                     if (!_data.length) {
                         box.html('No data yet!')
                         return false
