@@ -29,7 +29,7 @@
                         $.each(_item, function(_ii, _iitem) {
                             items_arr.push({
                                 type: _iitem.start ? 'range' : 'point',
-                                id: _iitem.timestamp,
+                                id: _iitem.timestamp + _i,
                                 group: _i,
                                 content: _iitem.desc,
                                 start: ~~ (_iitem.start || _iitem.timestamp),
