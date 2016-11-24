@@ -63,7 +63,7 @@ class TimeGroup {
     async getKeys(_day) {
         let now = moment().format('YYYYMMDD')
         let day = _day ||now
-        let key = `time_group:${now}`
+        let key = `time_group:${day}`
         return await this.client.smembersAsync(key)
     }
 

@@ -57,13 +57,16 @@
                 box.html('loading...')
                 var api = '/timegroup/list'
                 if (_day) api = '/timegroup/list/'+ _day
-                $.getJSON(api, function(_data) {
-                //$.getJSON('/list.json', function(_data) {
+                //$.getJSON(api, function(_data) {
+                $.getJSON('/list.json', function(_data) {
                     if (!_data.length) {
                         box.html('No data yet!')
                         return false
                     }
                     box.html('')
+                    _data = _data.sort(function(_a, _b) {
+                        return parseInt(_b[0].timestamp) - parseInt(_a[0].timestamp)
+                    })
                     $.each(_data, function(_i, _item) {
                         var ul = $('<ul />').addClass('row')
                         if (_item.length === 2 && !ALL) return

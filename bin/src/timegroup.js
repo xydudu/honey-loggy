@@ -145,7 +145,7 @@ var TimeGroup = function () {
                             case 0:
                                 now = (0, _moment2.default)().format('YYYYMMDD');
                                 day = _day || now;
-                                key = 'time_group:' + now;
+                                key = 'time_group:' + day;
                                 _context3.next = 5;
                                 return this.client.smembersAsync(key);
 
