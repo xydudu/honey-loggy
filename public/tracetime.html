@@ -2,49 +2,66 @@
 <html>
     <head>
         <title>Trace Time of All Actions</title>
-        <link href="//cdn.bootcss.com/vis/4.17.0/vis.min.css" rel="stylesheet" type="text/css" />
-        <link href="//cdn.bootcss.com/vis/4.17.0/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+        <link href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-        <script src="//cdn.bootcss.com/vis/4.17.0/vis.min.js"></script>
         <script src="//cdn.bootcss.com/moment.js/2.17.0/moment.min.js"></script>
         <style>
-            #box{
-                box-sizing: border-box;
-                width: 100%;
-                height: 300px;
+            ul {
+                list-style: none;
+                margin: 10px 0;
+                padding: 0;
+            }
+            li {
+                float: left;
+                padding: 5px;
+                font-size: 11px;
+                margin: 1px;
+            }
+            html, body, #box {
+                width: 1000000px;
             }
         </style>
     </head>
     <body>
-        <h1>Time Monitor<h1>
-        <div id="box"></div>
+        <h1>Time Monitor</h1>
+        <div class="container" id="box">
+                <!--
+            <ul class="row" id="box">
+                <li style="width: 100px; background-color: rgba(200,200,200,1)">step 1</li>  
+                <li style="width: 200px">step 2</li>  
+                <li style="width: 220px">step 3</li>  
+            </ul>
+                -->
+        </div>
         <script>
             $(function() {
+                
+                var box = $('#box')
+                box.html('loading...')
                 $.getJSON('/timegroup/list', function(_data) {
-                    var groups = new vis.DataSet($.map(_data, function(_item, _i) {
-                        return {id: _i, content: _i, value: _i}
-                    }))
-                    var items_arr = []
+                //$.getJSON('/list.json', function(_data) {
+                    if (!_data.length) {
+                        box.html('No data yet!')
+                        return false
+                    }
+                    box.html('')
                     $.each(_data, function(_i, _item) {
-                        $.each(_item, function(_ii, _iitem) {
-                            items_arr.push({
-                                type: _iitem.start ? 'range' : 'point',
-                                id: _iitem.timestamp + Math.random(),
-                                group: _i,
-                                content: _iitem.desc,
-                                start: ~~ (_iitem.start || _iitem.timestamp),
-                                end: ~~_iitem.end || 'None'
-                            })
-                        })
+                        var ul = $('<ul />').addClass('row')
+                        $.each(_item, function(_i, _item) {
+                            var w = _item.start ? (0.05 * (~~_item.end - ~~_item.start)) : 50
+                            var li = $('<li style="width: '+ w +'px; background-color: red"></li>') 
                             
+                            li.html((~~_item.end - ~~_item.start).toFixed() +'ms') 
+                            if(w < 50) {
+                                li.width('auto')
+                            }
+                            if (w === 50) {
+                                li.html('-').css('background-color','green').css('color', 'green').width('1px')
+                            }
+                            ul.append(li)
+                        })
+                        box.append(ul)
                     })
-                    console.log(items_arr)
-                    var items = new vis.DataSet(items_arr)
-                    var container = document.getElementById('box')
-                    var timeline = new vis.Timeline(container)
-                    timeline.setGroups(groups)
-                    timeline.setItems(items)
-
                 })
             })
 
