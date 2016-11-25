@@ -71,6 +71,7 @@
                     $.each(_data, function(_i, _item) {
                         var ul = $('<ul />').addClass('row')
                         if (_item.length === 2 && !ALL) return
+                        
                         $.each(_item, function(_i, _item) {
                             if (_item.start) {
                                 _item.start = parseInt(_item.start)
@@ -84,6 +85,7 @@
                                 ul.append('<li style="background-color:#fff;color:gray;">['+
                                         moment(_item.timestamp).fromNow() 
                                         +']'+ _item.desc +'</li>')
+                                return true
                             }
                             var w = _item.start ? (0.05 * (_item.end - _item.start)) : 50
                             var li = $('<li data-toggle="tooltip" data-placement="left" title="'+ _item.desc +'" style="width: '+ w +'px; background-color: red"></li>') 
