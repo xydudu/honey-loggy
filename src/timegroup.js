@@ -47,9 +47,14 @@ class TimeGroup {
                         i = {}
                     }
                 })
+                //arr.reduce((_start, _end) => {
+                //    _start.start = _start.timestamp
+                //    _start.end = _end.timestamp
+                //    return _end
+                //})
                 arr.reduce((_start, _end) => {
-                    _start.start = _start.timestamp
-                    _start.end = _end.timestamp
+                    _end.start = _start.timestamp
+                    _end.end = _end.timestamp
                     return _end
                 })
                 return arr

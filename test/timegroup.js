@@ -31,9 +31,9 @@ describe('TimeGroup', () => {
     it('list()', async () => {
         let timeGroup = new TimeGroup(key)
         let list = await timeGroup.list()
+        assert.equal(list[0].start, undefined)
         assert.equal(list.length, 5)
-        assert.equal(list[2].timestamp, 1479280026392)
-        console.log(list)
+        assert.equal(list[4].end, 1479281006392)
     })
 
     it('getKeys()', async () => {
