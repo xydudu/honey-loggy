@@ -12,6 +12,14 @@ export default class {
                 _._receive(_msg, _socket) 
             })
         })
+        /*
+        setInterval(() => {
+            _.server.getConnections((_err, _count) => {
+                if (_err) console.log(_err)
+                console.log(_count)
+            }) 
+        }, 2000)
+        */
         _.server.listen(server.port, server.host)
     }
 
