@@ -83,7 +83,7 @@
                             if (_i === 0) {
                                 _item.desc = _item.desc.replace(/^\[\w+\]/, '')
                                 ul.append('<li style="background-color:#fff;color:gray;">['+
-                                        _item.key 
+                                        _item.key.split(':')[1]
                                         +']['+
                                         moment(_item.timestamp).fromNow() 
                                         +']'+ _item.desc +'</li>')
