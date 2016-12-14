@@ -41,9 +41,9 @@ class TimeGroup {
                 _list.forEach(_item => {
                     if (isNaN(_item)) {
                         i.desc = _item 
-                        i.key = _.key
                     } else {
                         i.timestamp = _item
+                        i.key = _.key
                         arr.push(i)
                         i = {}
                     }
