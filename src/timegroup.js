@@ -43,7 +43,6 @@ class TimeGroup {
                         i.desc = _item 
                     } else {
                         i.timestamp = _item
-                        i.key = _.key
                         arr.push(i)
                         i = {}
                     }
@@ -54,6 +53,7 @@ class TimeGroup {
                 //    return _end
                 //})
                 arr.reduce((_start, _end) => {
+                    _start.key = _.key
                     _end.start = _start.timestamp
                     _end.end = _end.timestamp
                     return _end
