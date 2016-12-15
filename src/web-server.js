@@ -38,6 +38,7 @@ async function list(_req, _res, _next) {
 
 app.get('/timegroup/actions/:days', async (_req, _res, _next) => {
     let days = parseInt(_req.params.days) || 30
+    let callback = _req.query.callback
     let result = []
     while (days --) {
         let day = moment().add(-days, 'days').format('YYYYMMDD')
@@ -47,7 +48,7 @@ app.get('/timegroup/actions/:days', async (_req, _res, _next) => {
             actions: keys.length
         })
     }
-    _res.json(result)
+    _res.jsonp(result)
 })
 
 export default app
