@@ -20,6 +20,7 @@ app.get('/timegroup/list', async (_req, _res, _next) => {
 })
 app.get('/timegroup/list/:day', list)
 
+
 async function list(_req, _res, _next) {
     let day = _req.params.day
     if (day === 'today') day = moment().format('YYYYMMDD')
@@ -34,5 +35,19 @@ async function list(_req, _res, _next) {
     }
     _res.json(result) 
 }
+
+app.get('/timegroup/actions/:days', async (_req, _res, _next) => {
+    let days = parseInt(_req.params.days) || 30
+    let result = []
+    while (days --) {
+        let day = moment().add(-days, 'days').format('YYYYMMDD')
+        let keys = await  new TimeGroup().getKeys(day)
+        result.push({
+            day: day,
+            actions: keys.length
+        })
+    }
+    _res.json(result)
+})
 
 export default app

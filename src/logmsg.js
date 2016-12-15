@@ -60,7 +60,6 @@ class LogMsg extends Util {
 
     async _saveToTimeGroup() {
         let _ = this
-        //_.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
         await _.client.saddAsync(`time_group:${_.now}`, _.key)
         return await _.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
     }

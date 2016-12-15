@@ -47,11 +47,7 @@ class TimeGroup {
                         i = {}
                     }
                 })
-                //arr.reduce((_start, _end) => {
-                //    _start.start = _start.timestamp
-                //    _start.end = _end.timestamp
-                //    return _end
-                //})
+                
                 arr.reduce((_start, _end) => {
                     _start.key = _.key
                     _end.start = _start.timestamp
@@ -68,7 +64,7 @@ class TimeGroup {
 
     async getKeys(_day) {
         let now = moment().format('YYYYMMDD')
-        let day = _day ||now
+        let day = _day || now
         let key = `time_group:${day}`
         return await this.client.smembersAsync(key)
     }
