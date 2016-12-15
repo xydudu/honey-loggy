@@ -39,14 +39,15 @@ async function list(_req, _res, _next) {
 app.get('/timegroup/actions/:days', async (_req, _res, _next) => {
     let days = parseInt(_req.params.days) || 30
     let callback = _req.query.callback
-    let result = []
+    let result = {
+        days: [],
+        actions: []
+    }
     while (days --) {
         let day = moment().add(-days, 'days').format('YYYYMMDD')
         let keys = await  new TimeGroup().getKeys(day)
-        result.push({
-            day: day,
-            actions: keys.length
-        })
+        result.days.push(day)
+        result.actions.push(keys.length)
     }
     _res.jsonp(result)
 })
