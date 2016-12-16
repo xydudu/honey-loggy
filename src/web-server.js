@@ -52,4 +52,25 @@ app.get('/timegroup/actions/:days', async (_req, _res, _next) => {
     _res.jsonp(result)
 })
 
+app.get('/timegroup/:action/totaltime/:day', async (_req, _res, _next) => {
+    let action_name = _req.params.action
+    let day = _req.params.day
+    if (day === 'today') day = moment().format('YYYYMMDD')
+    if (day === 'yesterday') day = moment().add(-1, 'days').format('YYYYMMDD')
+    let keys = await new TimeGroup().getKeys(day)
+    let result = []
+    while(keys.length) {
+        let key = keys.shift()
+        let res = await new TimeGroup().actions(`${action_name}:${key}`)
+        result.push({
+            start: res.start,
+            total: res.end - res.start,
+            key: key
+        })
+    }
+
+    
+    _res.jsonp(result)
+})
+
 export default app

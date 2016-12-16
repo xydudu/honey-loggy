@@ -33,6 +33,9 @@ var port = _package.redis_conf.port,
     host = _package.redis_conf.host;
 
 var redisClient = _redis2.default.createClient(port, host);
+redisClient.on('error', function (_err) {
+    console.error(_err);
+});
 
 var Util = function () {
     function Util() {
@@ -48,8 +51,8 @@ var Util = function () {
     }, {
         key: 'getTimestampFromLog',
         value: function getTimestampFromLog(_input) {
-            var match = _input.match(/\[([0-9]+)\]$/);
-            return match ? match[1] : false;
+            var match = _input.replace(/[\s\t ]+$/g, '').match(/\[([0-9]+)\]$/);
+            return match ? parseInt(match[1]) : false;
         }
     }, {
         key: 'getAppnameFromLog',
@@ -61,6 +64,18 @@ var Util = function () {
         key: 'getDescFromLog',
         value: function getDescFromLog(_input) {
             return _input.replace(/(\[.+?\])/gi, '').replace(/(^\s+|\s+$)/gi, '');
+        }
+    }, {
+        key: 'isPreview',
+        value: function isPreview(_desc) {
+            return (/预览请求/.test(_desc)
+            );
+        }
+    }, {
+        key: 'isDeploy',
+        value: function isDeploy(_desc) {
+            return (/发布请求/.test(_desc)
+            );
         }
     }]);
 
@@ -88,9 +103,6 @@ var LogMsg = function (_Util) {
         _.desc = _.getDescFromLog(_input);
         _.type = _.key.split(':')[0];
 
-        _.client.on('error', function (_err) {
-            console.error(_err);
-        });
         return _this;
     }
 
@@ -98,26 +110,48 @@ var LogMsg = function (_Util) {
         key: '_saveToTimeGroup',
         value: function () {
             var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-                var _;
+                var _, is_preview, is_deploy, tasks;
 
                 return regeneratorRuntime.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 _ = this;
-                                //_.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
+                                is_preview = _.isPreview(_.desc);
+                                is_deploy = _.isDeploy(_.desc);
 
-                                _context.next = 3;
-                                return _.client.saddAsync('time_group:' + _.now, _.key);
+                                if (_.times) {
+                                    _context.next = 5;
+                                    break;
+                                }
 
-                            case 3:
-                                _context.next = 5;
-                                return _.client.zaddAsync(_.key, _.times, '[' + _.app_name + '] ' + _.desc);
+                                return _context.abrupt('return', false);
 
                             case 5:
+                                if (!(_.key === '')) {
+                                    _context.next = 7;
+                                    break;
+                                }
+
+                                return _context.abrupt('return', false);
+
+                            case 7:
+                                tasks = [_.client.saddAsync('time_group:' + _.now, _.key), _.client.zaddAsync(_.key, _.times, '[' + _.app_name + '] ' + _.desc)];
+
+                                if (is_preview) tasks.push(_.client.hmsetAsync('preview:' + _.key, ['start', _.times, 'end', _.times]));
+                                if (is_deploy) tasks.push(_.client.hmsetAsync('deploy:' + _.key, ['start', _.times, 'end', _.times]));
+
+                                _context.next = 12;
+                                return Promise.all([_.client.existsAsync('preview:' + _.key), _.client.existsAsync('deploy:' + _.key)]).then(function (_res) {
+                                    if (_res[0]) tasks.push(_.client.hsetAsync(['preview:' + _.key, 'end', _.times]));
+                                    if (_res[1]) tasks.push(_.client.hsetAsync('deploy:' + _.key, 'end', _.times));
+                                    return Promise.all(tasks);
+                                });
+
+                            case 12:
                                 return _context.abrupt('return', _context.sent);
 
-                            case 6:
+                            case 13:
                             case 'end':
                                 return _context.stop();
                         }
@@ -133,12 +167,40 @@ var LogMsg = function (_Util) {
         }()
     }, {
         key: 'save',
-        value: function save() {
-            if (this.type === 'time_group') {
-                return this._saveToTimeGroup();
+        value: function () {
+            var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
+                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                    while (1) {
+                        switch (_context2.prev = _context2.next) {
+                            case 0:
+                                if (!(this.type === 'time_group')) {
+                                    _context2.next = 4;
+                                    break;
+                                }
+
+                                _context2.next = 3;
+                                return this._saveToTimeGroup();
+
+                            case 3:
+                                return _context2.abrupt('return', _context2.sent);
+
+                            case 4:
+                                return _context2.abrupt('return', false);
+
+                            case 5:
+                            case 'end':
+                                return _context2.stop();
+                        }
+                    }
+                }, _callee2, this);
+            }));
+
+            function save() {
+                return _ref2.apply(this, arguments);
             }
-            return false;
-        }
+
+            return save;
+        }()
     }]);
 
     return LogMsg;

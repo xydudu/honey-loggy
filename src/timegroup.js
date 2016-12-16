@@ -62,6 +62,11 @@ class TimeGroup {
             })
     }
 
+    async actions(_key) {
+        let _ = this
+        return _.client.hmgetAsync(_key, 'start', 'end')
+    }
+
     async getKeys(_day) {
         let now = moment().format('YYYYMMDD')
         let day = _day || now

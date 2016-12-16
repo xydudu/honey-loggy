@@ -111,4 +111,109 @@ app.get('/timegroup/list', function () {
 }());
 app.get('/timegroup/list/:day', list);
 
+app.get('/timegroup/actions/:days', function () {
+    var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(_req, _res, _next) {
+        var days, callback, result, day, keys;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+                switch (_context3.prev = _context3.next) {
+                    case 0:
+                        days = parseInt(_req.params.days) || 30;
+                        callback = _req.query.callback;
+                        result = {
+                            days: [],
+                            actions: []
+                        };
+
+                    case 3:
+                        if (!days--) {
+                            _context3.next = 12;
+                            break;
+                        }
+
+                        day = (0, _moment2.default)().add(-days, 'days').format('YYYYMMDD');
+                        _context3.next = 7;
+                        return new _timegroup2.default().getKeys(day);
+
+                    case 7:
+                        keys = _context3.sent;
+
+                        result.days.push(day);
+                        result.actions.push(keys.length);
+                        _context3.next = 3;
+                        break;
+
+                    case 12:
+                        _res.jsonp(result);
+
+                    case 13:
+                    case 'end':
+                        return _context3.stop();
+                }
+            }
+        }, _callee3, undefined);
+    }));
+
+    return function (_x7, _x8, _x9) {
+        return _ref3.apply(this, arguments);
+    };
+}());
+
+app.get('/timegroup/:action/totaltime/:day', function () {
+    var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(_req, _res, _next) {
+        var action_name, day, keys, result, key, res;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            while (1) {
+                switch (_context4.prev = _context4.next) {
+                    case 0:
+                        action_name = _req.params.action;
+                        day = _req.params.day;
+
+                        if (day === 'today') day = (0, _moment2.default)().format('YYYYMMDD');
+                        if (day === 'yesterday') day = (0, _moment2.default)().add(-1, 'days').format('YYYYMMDD');
+                        _context4.next = 6;
+                        return new _timegroup2.default().getKeys(day);
+
+                    case 6:
+                        keys = _context4.sent;
+                        result = [];
+
+                    case 8:
+                        if (!keys.length) {
+                            _context4.next = 16;
+                            break;
+                        }
+
+                        key = keys.shift();
+                        _context4.next = 12;
+                        return new _timegroup2.default().actions(action_name + ':' + key);
+
+                    case 12:
+                        res = _context4.sent;
+
+                        result.push({
+                            start: res.start,
+                            total: res.end - res.start,
+                            key: key
+                        });
+                        _context4.next = 8;
+                        break;
+
+                    case 16:
+
+                        _res.jsonp(result);
+
+                    case 17:
+                    case 'end':
+                        return _context4.stop();
+                }
+            }
+        }, _callee4, undefined);
+    }));
+
+    return function (_x10, _x11, _x12) {
+        return _ref4.apply(this, arguments);
+    };
+}());
+
 exports.default = app;

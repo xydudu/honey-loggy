@@ -106,12 +106,9 @@ var TimeGroup = function () {
                                             i = {};
                                         }
                                     });
-                                    //arr.reduce((_start, _end) => {
-                                    //    _start.start = _start.timestamp
-                                    //    _start.end = _end.timestamp
-                                    //    return _end
-                                    //})
+
                                     arr.reduce(function (_start, _end) {
+                                        _start.key = _.key;
                                         _end.start = _start.timestamp;
                                         _end.end = _end.timestamp;
                                         return _end;
@@ -140,24 +137,19 @@ var TimeGroup = function () {
             return _timeGroupList;
         }()
     }, {
-        key: 'getKeys',
+        key: 'actions',
         value: function () {
-            var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(_day) {
-                var now, day, key;
+            var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(_key) {
+                var _;
+
                 return regeneratorRuntime.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
                             case 0:
-                                now = (0, _moment2.default)().format('YYYYMMDD');
-                                day = _day || now;
-                                key = 'time_group:' + day;
-                                _context3.next = 5;
-                                return this.client.smembersAsync(key);
+                                _ = this;
+                                return _context3.abrupt('return', _.client.hmgetAsync(_key, 'start', 'end'));
 
-                            case 5:
-                                return _context3.abrupt('return', _context3.sent);
-
-                            case 6:
+                            case 2:
                             case 'end':
                                 return _context3.stop();
                         }
@@ -165,8 +157,40 @@ var TimeGroup = function () {
                 }, _callee3, this);
             }));
 
-            function getKeys(_x) {
+            function actions(_x) {
                 return _ref3.apply(this, arguments);
+            }
+
+            return actions;
+        }()
+    }, {
+        key: 'getKeys',
+        value: function () {
+            var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(_day) {
+                var now, day, key;
+                return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                    while (1) {
+                        switch (_context4.prev = _context4.next) {
+                            case 0:
+                                now = (0, _moment2.default)().format('YYYYMMDD');
+                                day = _day || now;
+                                key = 'time_group:' + day;
+                                _context4.next = 5;
+                                return this.client.smembersAsync(key);
+
+                            case 5:
+                                return _context4.abrupt('return', _context4.sent);
+
+                            case 6:
+                            case 'end':
+                                return _context4.stop();
+                        }
+                    }
+                }, _callee4, this);
+            }));
+
+            function getKeys(_x2) {
+                return _ref4.apply(this, arguments);
             }
 
             return getKeys;
