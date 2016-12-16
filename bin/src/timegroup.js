@@ -32,6 +32,7 @@ var TimeGroup = function () {
             host = _package.redis_conf.host;
 
         (0, _bluebird.promisifyAll)(_redis2.default.RedisClient.prototype);
+        (0, _bluebird.promisifyAll)(_redis2.default.Multi.prototype);
 
         var _ = this;
         _.client = _redis2.default.createClient(port, host);
@@ -164,24 +165,45 @@ var TimeGroup = function () {
             return actions;
         }()
     }, {
-        key: 'getKeys',
+        key: 'actionsByTotaltime',
         value: function () {
-            var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(_day) {
-                var now, day, key;
+            var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(_action_name, _day) {
+                var _, keys, multi, i, l, key;
+
                 return regeneratorRuntime.wrap(function _callee4$(_context4) {
                     while (1) {
                         switch (_context4.prev = _context4.next) {
                             case 0:
-                                now = (0, _moment2.default)().format('YYYYMMDD');
-                                day = _day || now;
-                                key = 'time_group:' + day;
-                                _context4.next = 5;
-                                return this.client.smembersAsync(key);
+                                _ = this;
+                                _context4.next = 3;
+                                return _.getKeys(_day);
 
-                            case 5:
-                                return _context4.abrupt('return', _context4.sent);
+                            case 3:
+                                keys = _context4.sent;
+                                multi = _.client.multi();
 
-                            case 6:
+                                for (i = 0, l = keys.length; i < l; i++) {
+                                    key = keys[i];
+
+                                    multi.hmget(_action_name + ':' + key, 'start', 'end');
+                                }
+                                return _context4.abrupt('return', multi.execAsync().then(function (_res) {
+                                    return _res.map(function (_item, _i) {
+                                        var start = parseInt(_item[0]) || 0;
+                                        var end = parseInt(_item[1]) || 0;
+                                        return {
+                                            start: start,
+                                            total: end - start,
+                                            key: keys[_i]
+                                        };
+                                    }).filter(function (_item) {
+                                        return _item.start > 0;
+                                    }).sort(function (_a, _b) {
+                                        return _a.start - _b.start;
+                                    });
+                                }));
+
+                            case 7:
                             case 'end':
                                 return _context4.stop();
                         }
@@ -189,8 +211,40 @@ var TimeGroup = function () {
                 }, _callee4, this);
             }));
 
-            function getKeys(_x2) {
+            function actionsByTotaltime(_x2, _x3) {
                 return _ref4.apply(this, arguments);
+            }
+
+            return actionsByTotaltime;
+        }()
+    }, {
+        key: 'getKeys',
+        value: function () {
+            var _ref5 = _asyncToGenerator(regeneratorRuntime.mark(function _callee5(_day) {
+                var now, day, key;
+                return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                    while (1) {
+                        switch (_context5.prev = _context5.next) {
+                            case 0:
+                                now = (0, _moment2.default)().format('YYYYMMDD');
+                                day = _day || now;
+                                key = 'time_group:' + day;
+                                _context5.next = 5;
+                                return this.client.smembersAsync(key);
+
+                            case 5:
+                                return _context5.abrupt('return', _context5.sent);
+
+                            case 6:
+                            case 'end':
+                                return _context5.stop();
+                        }
+                    }
+                }, _callee5, this);
+            }));
+
+            function getKeys(_x4) {
+                return _ref5.apply(this, arguments);
             }
 
             return getKeys;

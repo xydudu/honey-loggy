@@ -10,6 +10,7 @@ class TimeGroup {
     constructor(_key) {
         let {port, host} = redis_conf 
         promisifyAll(redis.RedisClient.prototype)
+        promisifyAll(redis.Multi.prototype);
 
         let _ = this
         _.client = redis.createClient(port, host)
@@ -65,6 +66,32 @@ class TimeGroup {
     async actions(_key) {
         let _ = this
         return _.client.hmgetAsync(_key, 'start', 'end')
+    }
+
+    async actionsByTotaltime(_action_name, _day) {
+        let _ = this
+        let keys = await _.getKeys(_day) 
+        let multi = _.client.multi()
+        for(let i = 0, l = keys.length; i < l; i ++) {
+            let key = keys[i]
+            multi.hmget(`${_action_name}:${key}`, 'start', 'end')
+        }
+        return multi.execAsync()
+            .then(_res => {
+                return _res.map((_item, _i) => {
+                    let start = parseInt(_item[0]) || 0
+                    let end = parseInt(_item[1]) || 0
+                    return {
+                        start: start,
+                        total: end - start,
+                        key: keys[_i]
+                    } 
+                }).filter(_item => {
+                    return _item.start > 0
+                }).sort((_a, _b) => {
+                    return _a.start - _b.start
+                })
+            })
     }
 
     async getKeys(_day) {

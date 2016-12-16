@@ -161,7 +161,7 @@ app.get('/timegroup/actions/:days', function () {
 
 app.get('/timegroup/:action/totaltime/:day', function () {
     var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(_req, _res, _next) {
-        var action_name, day, keys, result, key, res, start, end;
+        var action_name, day, result;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
                 switch (_context4.prev = _context4.next) {
@@ -172,42 +172,31 @@ app.get('/timegroup/:action/totaltime/:day', function () {
                         if (day === 'today') day = (0, _moment2.default)().format('YYYYMMDD');
                         if (day === 'yesterday') day = (0, _moment2.default)().add(-1, 'days').format('YYYYMMDD');
                         _context4.next = 6;
-                        return new _timegroup2.default().getKeys(day);
+                        return new _timegroup2.default().actionsByTotaltime(action_name, day);
 
                     case 6:
-                        keys = _context4.sent;
-                        result = [];
+                        result = _context4.sent;
 
-                    case 8:
-                        if (!keys.length) {
-                            _context4.next = 18;
-                            break;
-                        }
 
-                        key = keys.shift();
-                        _context4.next = 12;
-                        return new _timegroup2.default().actions(action_name + ':' + key);
+                        //let result = []
+                        //while(keys.length) {
+                        //    let key = keys.shift()
+                        //    let res = await new TimeGroup().actions(`${action_name}:${key}`)
+                        //    //let res = await new TimeGroup().actions(`preview:time_group:8207078test`)
+                        //    let start = parseInt(res[0]) || 0
+                        //    let end = parseInt(res[1]) || 0
+                        //    if (!start) continue
+                        //    result.push({
+                        //        start: start,
+                        //        total: end - start,
+                        //        key: key
+                        //    })
+                        //}
 
-                    case 12:
-                        res = _context4.sent;
-
-                        //let res = await new TimeGroup().actions(`preview:time_group:8207078test`)
-                        start = parseInt(res[0]);
-                        end = parseInt(res[1]);
-
-                        result.push({
-                            start: start,
-                            total: end - start,
-                            key: key
-                        });
-                        _context4.next = 8;
-                        break;
-
-                    case 18:
 
                         _res.jsonp(result);
 
-                    case 19:
+                    case 8:
                     case 'end':
                         return _context4.stop();
                 }

@@ -57,21 +57,23 @@ app.get('/timegroup/:action/totaltime/:day', async (_req, _res, _next) => {
     let day = _req.params.day
     if (day === 'today') day = moment().format('YYYYMMDD')
     if (day === 'yesterday') day = moment().add(-1, 'days').format('YYYYMMDD')
-    let keys = await new TimeGroup().getKeys(day)
-    let result = []
-    while(keys.length) {
-        let key = keys.shift()
-        let res = await new TimeGroup().actions(`${action_name}:${key}`)
-        //let res = await new TimeGroup().actions(`preview:time_group:8207078test`)
-        let start = parseInt(res[0]) || 0
-        let end = parseInt(res[1]) || 0
-        if (!start) continue
-        result.push({
-            start: start,
-            total: end - start,
-            key: key
-        })
-    }
+    let result = await new TimeGroup().actionsByTotaltime(action_name, day)
+    
+
+    //let result = []
+    //while(keys.length) {
+    //    let key = keys.shift()
+    //    let res = await new TimeGroup().actions(`${action_name}:${key}`)
+    //    //let res = await new TimeGroup().actions(`preview:time_group:8207078test`)
+    //    let start = parseInt(res[0]) || 0
+    //    let end = parseInt(res[1]) || 0
+    //    if (!start) continue
+    //    result.push({
+    //        start: start,
+    //        total: end - start,
+    //        key: key
+    //    })
+    //}
 
     
     _res.jsonp(result)
