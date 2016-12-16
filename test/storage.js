@@ -76,9 +76,9 @@ describe('LogMsg', () => {
     })
 
     describe('preview & deploy', () => {
-        after(done => {
-            c.del('preview:time_group:8207078test', done)
-        })
+        //after(done => {
+        //    c.del('preview:time_group:8207078test', done)
+        //})
 
         before(async () => {
             let msg = new LogMsg('[dollargan] 收到预览请求 [time_group:8207078test][1481875920667]')

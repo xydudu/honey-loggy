@@ -161,7 +161,7 @@ app.get('/timegroup/actions/:days', function () {
 
 app.get('/timegroup/:action/totaltime/:day', function () {
     var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(_req, _res, _next) {
-        var action_name, day, keys, result, key, res;
+        var action_name, day, keys, result, key, res, start, end;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
                 switch (_context4.prev = _context4.next) {
@@ -180,7 +180,7 @@ app.get('/timegroup/:action/totaltime/:day', function () {
 
                     case 8:
                         if (!keys.length) {
-                            _context4.next = 16;
+                            _context4.next = 18;
                             break;
                         }
 
@@ -191,19 +191,23 @@ app.get('/timegroup/:action/totaltime/:day', function () {
                     case 12:
                         res = _context4.sent;
 
+                        //let res = await new TimeGroup().actions(`preview:time_group:8207078test`)
+                        start = parseInt(res[0]);
+                        end = parseInt(res[1]);
+
                         result.push({
-                            start: res.start,
-                            total: res.end - res.start,
+                            start: start,
+                            total: end - start,
                             key: key
                         });
                         _context4.next = 8;
                         break;
 
-                    case 16:
+                    case 18:
 
                         _res.jsonp(result);
 
-                    case 17:
+                    case 19:
                     case 'end':
                         return _context4.stop();
                 }

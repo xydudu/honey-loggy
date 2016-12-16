@@ -62,9 +62,12 @@ app.get('/timegroup/:action/totaltime/:day', async (_req, _res, _next) => {
     while(keys.length) {
         let key = keys.shift()
         let res = await new TimeGroup().actions(`${action_name}:${key}`)
+        //let res = await new TimeGroup().actions(`preview:time_group:8207078test`)
+        let start = parseInt(res[0])
+        let end = parseInt(res[1])
         result.push({
-            start: res.start,
-            total: res.end - res.start,
+            start: start,
+            total: end - start,
             key: key
         })
     }
