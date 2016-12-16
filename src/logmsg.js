@@ -7,6 +7,9 @@ import { redis_conf } from '~/package.json'
 promisifyAll(redis.RedisClient.prototype)
 const {port, host} = redis_conf 
 const redisClient = redis.createClient(port, host)
+redisClient.on('error', _err => {
+    console.error(_err) 
+})
 
 class Util {
     
@@ -53,9 +56,6 @@ class LogMsg extends Util {
         _.desc = _.getDescFromLog(_input)
         _.type = _.key.split(':')[0]
 
-        _.client.on('error', _err => {
-            console.error(_err) 
-        })
     }
 
     async _saveToTimeGroup() {
