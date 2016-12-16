@@ -18,7 +18,10 @@ describe('Util', () => {
 
     it('getTimestampFromLog()', () => {
         let expect = msg.getTimestampFromLog(input)
+        let input2 = '[dollargan] honey-loggly To B [time_group:1111] [1234] '
+        let expect2 = msg.getTimestampFromLog(input2)
         assert.ok(expect === '1479280006392')
+        assert.ok(expect2 === '1234')
     })
 
     it('getAppnameFromLog()', () => {
@@ -49,16 +52,16 @@ describe('LogMsg', () => {
         })
     })
 
-    it('save()', () => {
+    it('save()', async () => {
         let input = ' [dollargan] A同学点击预览 [time_group:a1b2c3d4] [1479280006392]'
         let msg = new LogMsg(input)
         assert.ok(msg.type === 'time_group')
-        assert.ok(msg.save())
+        assert.ok(await msg.save())
 
         let input2 = '[dollargan] honey-loggly To B [time_group:1111] [1234] '
         let msg2 = new LogMsg(input2)
         assert.ok(msg2.type === 'time_group')
-        assert.ok(msg2.save())
+        assert.ok(await msg2.save())
     })
         
     it('check keys', done => {
@@ -68,6 +71,30 @@ describe('LogMsg', () => {
             c.smembers(`time_group:${now}`, (_err, _res) => {
                 assert.ok(_res.length > 1)
                 done()
+            })
+        })
+    })
+
+    describe('preview & deploy', () => {
+        after(done => {
+            c.del('preview:time_group:8207078test', done)
+        })
+
+        before(async () => {
+            let msg = new LogMsg('[dollargan] 收到预览请求 [time_group:8207078test][1481875920667]')
+            let msg2 = new LogMsg('[dollargan] step2 [time_group:8207078test][1481875920668]')
+            await msg.save()
+            await msg2.save()
+        })
+        
+        it('preview', done => {
+            
+            c.exists(`preview:time_group:8207078test`, async (_err, _res) => {
+                assert.ok(_res) 
+                c.hget('preview:time_group:8207078test', 'end', (_err, _res) => {
+                    assert.equal(parseInt(_res), 1481875920668)
+                    done(_err)
+                })
             })
         })
     })

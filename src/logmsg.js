@@ -23,8 +23,8 @@ class Util {
     }
 
     getTimestampFromLog(_input) {
-        let match = _input.match(/\[([0-9]+)\]$/)
-        return match ? match[1] : false
+        let match = _input.replace(/[\s\t ]+$/g, '').match(/\[([0-9]+)\]$/)
+        return match ? parseInt(match[1]) : false
     }
 
     getAppnameFromLog(_input) {
@@ -34,6 +34,13 @@ class Util {
 
     getDescFromLog(_input) {
         return _input.replace(/(\[.+?\])/gi, '').replace(/(^\s+|\s+$)/gi, '')
+    }
+
+    isPreview(_desc) {
+        return /预览请求/.test(_desc)
+    }
+    isDeploy(_desc) {
+        return /发布请求/.test(_desc)
     }
 
 }
@@ -60,13 +67,34 @@ class LogMsg extends Util {
 
     async _saveToTimeGroup() {
         let _ = this
-        await _.client.saddAsync(`time_group:${_.now}`, _.key)
-        return await _.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
+        let is_preview = _.isPreview(_.desc)
+        let is_deploy =  _.isDeploy(_.desc)
+        if (!_.times) return false
+        if (_.key === '') return false
+        let tasks = [
+            _.client.saddAsync(`time_group:${_.now}`, _.key),
+            _.client.zaddAsync(_.key, _.times, `[${_.app_name}] ${_.desc}`)
+        ]
+        if (is_preview) 
+            tasks.push(_.client.hmsetAsync(`preview:${_.key}`, ['start', _.times, 'end', _.times]))
+        if (is_deploy) 
+            tasks.push(_.client.hmsetAsync(`deploy:${_.key}`, ['start', _.times, 'end', _.times]))
+        
+        return await Promise.all([
+            _.client.existsAsync(`preview:${_.key}`),
+            _.client.existsAsync(`deploy:${_.key}`)
+        ]).then(_res => {
+            if (_res[0])
+                tasks.push(_.client.hsetAsync([`preview:${_.key}`, 'end', _.times]))
+            if (_res[1])
+                tasks.push(_.client.hsetAsync(`deploy:${_.key}`, 'end', _.times))
+            return Promise.all(tasks)   
+        })
     }
 
-    save() {
+    async save() {
         if (this.type === 'time_group') {
-            return this._saveToTimeGroup()
+            return await this._saveToTimeGroup()
         }
         return false
     }

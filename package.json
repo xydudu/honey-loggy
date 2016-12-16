@@ -5,6 +5,7 @@
   "bin": "./bin/honey-log-server",
   "scripts": {
     "test": "mocha --compilers js:babel-register",
+    "test-1": "mocha --compilers js:babel-register --grep LogMsg",
     "babel": "babel-node ./index.js",
     "build": "cp ./package.json ./bin/package.json && babel ./index.js --out-file ./bin/honey-log-server && babel ./src --out-dir ./bin/src",
     "server": "node ./bin/honey-log-server"
