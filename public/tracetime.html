@@ -82,11 +82,12 @@
                             _item.timestamp = parseInt(_item.timestamp)
                             if (_i === 0) {
                                 _item.desc = _item.desc.replace(/^\[\w+\]/, '')
-                                ul.append('<li style="background-color:#fff;color:gray;">['+
-                                        _item.key.split(':')[1]
-                                        +']['+
-                                        moment(_item.timestamp).fromNow() 
-                                        +']'+ _item.desc +'</li>')
+                                if (_item.key)
+                                    ul.append('<li style="background-color:#fff;color:gray;">['+
+                                            _item.key.split(':')[1]
+                                            +']['+
+                                            moment(_item.timestamp).fromNow() 
+                                            +']'+ _item.desc +'</li>')
                                 return true
                             }
                             var w = _item.start ? (0.05 * (_item.end - _item.start)) : 50
