@@ -73,6 +73,28 @@ class TimeGroup {
         }
 
         return multi.execAsync()
+                .then(_list => {
+                    return _list.map((_item, _i) => {
+                        let arr = []
+                        let i = {}
+                        _item.forEach(_step => {
+                            if (isNaN(_step)) {
+                                i.desc = _step
+                            } else {
+                                i.timestamp = _step
+                                arr.push(i)
+                                i = {}
+                            }
+                        })
+                        arr.reduce((_start, _end) => {
+                            _start.key = keys[_i]
+                            _end.start = _start.timestamp
+                            _end.end = _end.timestamp
+                            return _end
+                        })
+                        return arr
+                    })
+                })
             //.then(_res => {
             //    return _res 
             //})
