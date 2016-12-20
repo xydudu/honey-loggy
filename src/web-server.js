@@ -27,6 +27,26 @@ async function list(_req, _res, _next) {
     else if (day === 'yesterday') day = moment().add(-1, 'days').format('YYYYMMDD')
     else day = false
     let result = await new TimeGroup().listActionsByStep(day)
+    result = result.map(_item => {
+        let arr = []
+        let i = {}
+        _item.forEach(_step => {
+            if (isNaN(_step)) {
+                i.desc = _step
+            } else {
+                i.timestamp = _step
+                arr.push(i)
+                i = {}
+            }
+        })
+        arr.reduce((_start, _end) => {
+            _start.key = _.key
+            _end.start = _start.timestamp
+            _end.end = _end.timestamp
+            return _end
+        })
+        return arr
+    })
     //let keys = await new TimeGroup().getKeys(day)
     //let result = []
     //while(keys.length) {
