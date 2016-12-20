@@ -26,13 +26,14 @@ async function list(_req, _res, _next) {
     if (day === 'today') day = moment().format('YYYYMMDD')
     else if (day === 'yesterday') day = moment().add(-1, 'days').format('YYYYMMDD')
     else day = false
-    let keys = await new TimeGroup().getKeys(day)
-    let result = []
-    while(keys.length) {
-        let list = new TimeGroup(keys.shift())
-        list = await list.list()
-        result.push(list)
-    }
+    let result = await new TimeGroup().listActionsByStep(day)
+    //let keys = await new TimeGroup().getKeys(day)
+    //let result = []
+    //while(keys.length) {
+    //    let list = new TimeGroup(keys.shift())
+    //    list = await list.list()
+    //    result.push(list)
+    //}
     _res.json(result) 
 }
 

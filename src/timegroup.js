@@ -63,6 +63,25 @@ class TimeGroup {
             })
     }
 
+    async listActionsByStep (_day) {
+        let _ = this
+        let keys = await _.getKeys(_day)
+        let multi = _.client.multi()
+        for(let i = 0, l = keys.length; i < l; i ++) {
+            let key = keys[i] 
+            multi.zrange(key, 0, -1, 'withscores')
+        }
+
+        return multi.execAsync()
+            //.then(_res => {
+            //    return _res 
+            //})
+            //.catch(_err => {
+            //    console.log(`[err] ${_err}`)
+            //    return []
+            //}) 
+    }
+
     async actions(_key) {
         let _ = this
         return _.client.hmgetAsync(_key, 'start', 'end')
