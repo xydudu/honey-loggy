@@ -2,6 +2,7 @@
 import net from 'net'
 import express from 'express'
 import moment from 'moment'
+import logger from 'morgan'
 
 import TimeGroup from '~/src/timegroup.js'
 
@@ -9,6 +10,7 @@ const app = express()
 //const router = app.Router()
 
 app.use(express.static(`${process.cwd()}/public`))
+app.use(logger('dev'))
 
 app.get('/', (req, res) => {
     res.send('hello world')

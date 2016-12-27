@@ -20,8 +20,8 @@ describe('Util', () => {
         let expect = msg.getTimestampFromLog(input)
         let input2 = '[dollargan] honey-loggly To B [time_group:1111] [1234] '
         let expect2 = msg.getTimestampFromLog(input2)
-        assert.ok(expect === '1479280006392')
-        assert.ok(expect2 === '1234')
+        assert.ok(expect === 1479280006392)
+        assert.ok(expect2 === 1234)
     })
 
     it('getAppnameFromLog()', () => {

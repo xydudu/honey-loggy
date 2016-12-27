@@ -4,26 +4,28 @@ import moment from 'moment'
 import { promisifyAll } from 'bluebird'
 import { redis_conf } from '~/package.json'
 
+promisifyAll(redis.RedisClient.prototype)
+promisifyAll(redis.Multi.prototype)
+
+const {port, host} = redis_conf
+const redisClient = redis.createClient(port, host)
+
+redisClient.on('error', err => {
+    console.error(err)
+})
 
 class TimeGroup {
     
     constructor(_key) {
-        let {port, host} = redis_conf 
-        promisifyAll(redis.RedisClient.prototype)
-        promisifyAll(redis.Multi.prototype);
 
         let _ = this
-        _.client = redis.createClient(port, host)
+        _.client = redisClient
 
         if (_key && _key.indexOf(':') > 0) {
             _.key = _key
             _.type = _key.split(':')[0]
         }
         
-
-        _.client.on('error', _err => {
-            console.error(_err) 
-        })
     }
 
     async list() {
