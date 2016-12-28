@@ -1,7 +1,9 @@
 
 import net from 'net'
-import { server } from '~/package.json'
+import dotenv from 'dotenv'
 import LogMsg from '~/src/logmsg.js'
+
+dotenv.load({path: `${process.cwd()}/.env`})
 
 export default class {
     
@@ -20,7 +22,7 @@ export default class {
             }) 
         }, 2000)
         */
-        _.server.listen(server.port, server.host)
+        _.server.listen(process.env.SOCKET_SERVER_PORT, process.env.SOCKET_SERVER_HOST)
     }
 
     _receive(_msg, _socket) {

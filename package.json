@@ -7,8 +7,8 @@
     "test": "mocha --compilers js:babel-register",
     "test-1": "mocha --compilers js:babel-register --grep LogMsg",
     "babel": "babel-node ./index.js",
-    "build": "cp ./package.json ./bin/package.json && babel ./index.js --out-file ./bin/honey-log-server && babel ./src --out-dir ./bin/src",
-    "server": "node ./bin/honey-log-server"
+    "build": "babel ./index.js --out-file ./bin/honey-log-server && babel ./src --out-dir ./bin/src",
+    "start": "node ./bin/honey-log-server"
   },
   "keywords": [
     "log"
@@ -27,31 +27,11 @@
     "redis": "^2.6.3",
     "supertest": "^2.0.1"
   },
-  "babel": {
-    "presets": [
-      "latest"
-    ],
-    "plugins": [
-      "transform-async-to-generator",
-      "syntax-async-functions",
-      "babel-root-import"
-    ]
-  },
-  "server": {
-    "port": "8124",
-    "host": "0.0.0.0"
-  },
-  "web_server": {
-    "port": "8888",
-    "host": "0.0.0.0"
-  },
-  "redis_conf": {
-    "port": "6379",
-    "host": "127.0.0.1"
-  },
   "dependencies": {
     "bluebird": "^3.4.6",
+    "dotenv": "^2.0.0",
     "express": "^4.14.0",
-    "moment": "^2.16.0"
+    "moment": "^2.16.0",
+    "morgan": "^1.7.0"
   }
 }

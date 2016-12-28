@@ -4,8 +4,8 @@ import redis from 'redis'
 import moment from 'moment'
 import TimeGroup from '~/src/timegroup.js'
 import LogMsg from '~/src/logmsg.js'
-import { redis_conf } from '~/package.json'
 
+require('dotenv').load({path: `${process.cwd()}/.env`})
 
 describe('TimeGroup', () => { 
     let key = 'time_group:a1b2c3d5'
@@ -18,8 +18,7 @@ describe('TimeGroup', () => {
         new LogMsg('[hoobot] step5 [time_group:a1b2c3d5] [1479281006392]').save()
     }) 
     after(done => {
-        let {port, host} = redis_conf 
-        let c = redis.createClient(port, host)  
+        let c = redis.createClient(process.env.REDIS_SERVER_PORT, process.env.REDIS_SERVER_HOST)  
         c.del(`time_group:${now}`, () => {
             c.del('time_group:a1b2c3d5', () => {
                 c.del('time_group:a1b2c3d4', () => {

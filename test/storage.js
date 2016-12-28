@@ -4,8 +4,8 @@ import assert from 'assert'
 import redis from 'redis'
 import moment from 'moment'
 import LogMsg from '~/src/logmsg.js'
-import { redis_conf } from '~/package.json'
 
+require('dotenv').load({path: `${process.cwd()}/.env`})
 
 describe('Util', () => {
     
@@ -38,8 +38,7 @@ describe('Util', () => {
 
 describe('LogMsg', () => {
     
-    let {port, host} = redis_conf 
-    let c = redis.createClient(port, host)  
+    let c = redis.createClient(process.env.REDIS_SERVER_PORT, process.env.REDIS_SERVER_HOST)  
     let now = moment().format('YYYYMMDD')
 
     after(done => {
