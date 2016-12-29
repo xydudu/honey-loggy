@@ -1,0 +1,3 @@
+[submodule "honey-loggly-web"]
+	path = honey-loggly-web
+	url = git@git.hunantv.com:chen.js1023/honey-loggly-web
