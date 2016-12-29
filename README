@@ -2,7 +2,19 @@
 
 Server for honey-loggly
 
-- npm test 
+Honey-loggly 包含了 honey-loggly-web 子模块，克隆仓库代码时可以增加 `--recursive` 选项，自动初始化并更新仓库中的每一个子模块。
 
-- npm run build
+- git clone git@git.hunantv.com:JusticeLeague/honey-loggly.git --recursive
+
+## Installation
+
+- npm install
+- npm test
+- npm run web_build # build for web page
+- npm run build # build for server
 - npm start
+
+## Development
+
+- npm run web_build
+- npm run babel
