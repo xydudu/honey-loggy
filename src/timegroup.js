@@ -98,13 +98,13 @@ class TimeGroup {
                         return arr
                     })
                 })
-            //.then(_res => {
-            //    return _res 
-            //})
-            //.catch(_err => {
-            //    console.log(`[err] ${_err}`)
-            //    return []
-            //}) 
+                //.then(_res => {
+                //    return _res
+                //})
+                .catch(_err => {
+                   console.log(`[err] ${_err}`)
+                   return []
+                })
     }
 
     async actions(_key) {
@@ -138,10 +138,8 @@ class TimeGroup {
             })
     }
 
-    async getKeys(_day) {
-        let now = moment().format('YYYYMMDD')
-        let day = _day || now
-        let key = `time_group:${day}`
+    async getKeys(_day=moment().format('YYYYMMDD')) {
+        let key = `time_group:${_day}`
         return await this.client.smembersAsync(key)
     }
 
