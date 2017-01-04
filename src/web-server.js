@@ -27,7 +27,7 @@ async function list(_req, _res, _next) {
     let day = _req.params.day
     if (day === 'today') day = moment().format('YYYYMMDD')
     else if (day === 'yesterday') day = moment().add(-1, 'days').format('YYYYMMDD')
-    else day = false
+    else day = undefined
     let result = await new TimeGroup().listActionsByStep(day)
     //result = result.map(_item => {
     //})
@@ -61,7 +61,8 @@ app.get('/timegroup/:action/totaltime/:day', async (_req, _res, _next) => {
     let action_name = _req.params.action
     let day = _req.params.day
     if (day === 'today') day = moment().format('YYYYMMDD')
-    if (day === 'yesterday') day = moment().add(-1, 'days').format('YYYYMMDD')
+    else if (day === 'yesterday') day = moment().add(-1, 'days').format('YYYYMMDD')
+    else day = undefined
     let result = await new TimeGroup().actionsByTotaltime(action_name, day)
     _res.jsonp(result)
 })
