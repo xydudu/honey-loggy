@@ -2,10 +2,10 @@
 import redis from 'redis'
 import moment from 'moment'
 import { promisifyAll } from 'bluebird'
-import dotenv from 'dotenv'
+import { load } from 'dotenv'
 
 promisifyAll(redis.RedisClient.prototype)
-dotenv.load({path: `${process.cwd()}/.env`})
+load({path: `${process.cwd()}/.env`})
 
 const redisClient = redis.createClient(process.env.REDIS_SERVER_PORT, process.env.REDIS_SERVER_HOST)
 redisClient.on('error', _err => {
