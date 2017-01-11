@@ -1,4 +1,4 @@
-# honey-loggly 
+# honey-loggly
 
 Server for honey-loggly
 
@@ -18,3 +18,81 @@ Honey-loggly 包含了 honey-loggly-web 子模块，克隆仓库代码时可以�
 
 - npm run web_build
 - npm run babel
+
+## API
+
+- `GET` /timegroup/list[?days=7] *Todo* 默认返回一周的操作步骤数据
+- `GET` /timegroup/list/:day 返回某一天的操作步骤数据，例如
+```
+[
+  [
+    {
+      "desc": "[dollargan] 收到预览请求",
+      "timestamp": "1483672749169",
+      "key": "time_group:4493012"
+    },
+    {
+      "desc": "[dollargan] 开始刷新缓存",
+      "timestamp": "1483672749435",
+      "start": "1483672749169",
+      "end": "1483672749435",
+      "key": "time_group:4493012"
+    },
+    {
+      "desc": "[maid] info:Accept $gan time is Fri Jan 06 2017 11:19:09 GMT+0800 (CST)",
+      "timestamp": "1483672749437",
+      "start": "1483672749435",
+      "end": "1483672749437",
+      "key": "time_group:4493012"
+    },
+    ...
+  ]
+]
+```
+- `GET` /timegroup/actions/:days *Deprecated*, use `/timegroup/actions?days=30`
+- `GET` /timegroup/actions[?days=30] 默认返回30天的操作次数，例如
+```
+{
+    "days": ["20170101", "20170102", ...],
+    "actions": [263, 175, ...]
+}
+```
+- `GET` /timegroup/:action/totaltime/:day 返回某天的操作统计数据，例如
+```
+{
+    "average_time": "1299",
+    "min_time": "515",
+    "max_time": "6674",
+    "total_time": "209080",
+    "total_action": "161",
+    "action_name": "preview",
+    "day": "20170105"
+}
+```
+- `GET` /timegroup/:action/statistics[?days=7] 默认返回最近一周的`preview`或`deploy`统计数据，当某一天没有数据时返回空 `{}`。 例如
+```
+[
+    {},
+    {},
+    {},
+    {
+      "average_time": "1981",
+      "min_time": "1793",
+      "max_time": "5597",
+      "total_time": "386294",
+      "total_action": "195",
+      "action_name": "preview",
+      "day": "20161216"
+    },
+    {
+      "average_time": "1925",
+      "min_time": "1839",
+      "max_time": "3756",
+      "total_time": "221365",
+      "total_action": "115",
+      "action_name": "preview",
+      "day": "20161217"
+    },
+    ...
+]
+```
