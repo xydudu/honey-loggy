@@ -8,7 +8,7 @@
     "test-1": "mocha --compilers js:babel-register --grep LogMsg",
     "babel": "babel-node ./index.js",
     "build": "babel ./index.js --out-file ./bin/honey-log-server && babel ./src --out-dir ./bin/src",
-    "web_build": "npm run web_clean && npm run web_update && cd honey-loggly-web && node ./build/build.js && cp -vr ./dist/ ../public/",
+    "web_build": "npm run web_clean && npm run web_update && cd honey-loggly-web && node ./build/build.js && cp -vr ./dist/* ../public/",
     "web_clean": "rm -rf ./public/index.html ./public/static",
     "web_update": "git submodule update --remote && cd honey-loggly-web && npm install",
     "start": "node ./bin/honey-log-server"
@@ -32,9 +32,10 @@
   },
   "dependencies": {
     "bluebird": "^3.4.6",
-    "dotenv": "^2.0.0",
+    "dotenv": "^4.0.0",
     "express": "^4.14.0",
     "moment": "^2.16.0",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "underscore": "^1.8.3"
   }
 }

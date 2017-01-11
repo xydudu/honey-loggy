@@ -1,9 +1,9 @@
 
 import net from 'net'
-import dotenv from 'dotenv'
+import { load } from 'dotenv'
 import LogMsg from '~/src/logmsg.js'
 
-dotenv.load({path: `${process.cwd()}/.env`})
+load({path: `${process.cwd()}/.env`})
 
 export default class {
     

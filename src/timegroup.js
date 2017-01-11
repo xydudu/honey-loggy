@@ -1,13 +1,14 @@
 
 import redis from 'redis'
 import moment from 'moment'
+import _ from 'underscore'
 import { promisifyAll } from 'bluebird'
-import dotenv from 'dotenv'
+import { load } from 'dotenv'
 
 promisifyAll(redis.RedisClient.prototype)
 promisifyAll(redis.Multi.prototype)
 
-dotenv.load({path: `${process.cwd()}/.env`})
+load({path: `${process.cwd()}/.env`})
 
 const redisClient = redis.createClient(process.env.REDIS_SERVER_PORT, process.env.REDIS_SERVER_HOST)
 
@@ -141,6 +142,41 @@ class TimeGroup {
     async getKeys(_day=moment().format('YYYYMMDD')) {
         let key = `time_group:${_day}`
         return await this.client.smembersAsync(key)
+    }
+
+    async calculateByDate(action_name, day=moment().format('YYYYMMDD')) {
+        let key = `statistics:${action_name}:time_group:${day}`
+        let isExistKey = await this.client.existsAsync(key)
+        let now = moment().format('YYYYMMDD')
+
+        // always calculate the latest data for `today`
+        if (isExistKey && day !== now) {
+            return await this.client.hgetallAsync(key)
+        } else {
+            let totaltimes = await this.actionsByTotaltime(action_name, day)
+            totaltimes = totaltimes.map(item => {
+                return item.total
+            })
+
+            if (!totaltimes.length) return {}
+            let min_time = _.min(totaltimes)
+            let max_time = _.max(totaltimes)
+            let total_time = totaltimes.reduce((start, end) => {
+                return start + end
+            })
+            let total_action = totaltimes.length
+            let average_time = Math.ceil(total_time / total_action)
+            try {
+                let res = await this.client.hmsetAsync(key, 'average_time', average_time, 'min_time', min_time, 'max_time', max_time, 'total_time', total_time, 'total_action', total_action)
+
+                if (res === 'OK') {
+                    return await this.client.hgetallAsync(key)
+                }
+            } catch (err) {
+                console.log(err)
+            }
+            return {}
+        }
     }
 
 }

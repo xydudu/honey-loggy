@@ -21,4 +21,20 @@ describe('API:timegroup', () => {
                 done()
             })
     })
+    it('/timegroup/preview/statistics', done => {
+        agent.get('/timegroup/preview/statistics')
+            .expect(200)
+            .end((_err, _res) => {
+                if (_err) return done(_err)
+                done()
+            })
+    })
+    it('/timegroup/preview/statistics/today', done => {
+        agent.get('/timegroup/preview/statistics/today')
+            .expect(200)
+            .end((_err, _res) => {
+                if (_err) return done(_err)
+                done()
+            })
+    })
 })
